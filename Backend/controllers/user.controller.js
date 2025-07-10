@@ -1,0 +1,200 @@
+// making functions to control models
+// user control
+import User from "../models/user.model.js";
+import bcrypt from "bcrypt.js";
+import jwt from "jsonwebtoken";
+// for registering
+export const register = async (req,res) =>{
+    try{
+        const{fullname, email, phoneNumber, password, role} = req.body;
+        if(!fullname || !email || !phoneNumber || !password || !role){
+            return res.status(404).json({
+                message:"Missing required feilds",
+                success:false,
+            });
+        }
+        const user = await User.findOne({email}); // check if the user exits with this email id,, if exists then, 
+        if(user){
+            return res.status(400).json({
+                message:"Email already exists",
+                success: false
+            })
+
+        }
+
+        // convert passwords to hashed passwords
+        const hashedPassword = await bcrypt.hash(password,10);
+
+        // creating new user or user with hashed password
+        const newUser = new User({
+            fullname,
+            email,
+            phoneNumber,
+            password: hashedPassword,
+            role,
+        });
+        await newUser.save();
+        
+        return res.status(201).json({
+            message: `Account created successfully for ${fullname}`,
+            success:true,
+        });
+    }catch(error){
+        console.error(error);
+        res.status(500).json({
+            message: "Server Error registering User",
+            success: false,
+        });
+    }
+};
+
+// for login
+export const login = async (req, res) =>{
+    try{
+        const {email, password, role} = req.body;
+
+        if(!email || !password || !role){
+            return res.status(400).json({
+                message: "Missing required feilds",
+                success: false,
+            });
+        }
+        // check if email or user already exists
+        let user = await User.findOne({ email });
+        if (!user) {
+            return res.status(404).json({
+                message: "Incorrect email or password",
+                success: false,
+            });
+        }
+        // checking for password
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            return res.status(400).json({
+                message: "Incorrect email or password",
+                success: false,
+            });
+        }
+
+        if (user.role !== role) {
+            return res.status(403).json({
+                message: "You don't have the necessary role to access this resource",
+                success: false,
+            });
+        }
+        //generating token and storing it in cookies
+        const tokenData = {
+            userId: user._id,
+        };
+        const token = jwt.sign(tokenData, process.env.JWT_SECRET, {
+            expiresIn: "1d",
+        });
+
+        user ={
+            _id: user._id,
+            fullname: user.fullname,
+            email: user.email,
+            phoneNumber: user.phoneNumber,
+            role: user.role,
+            profile: user.profile,
+        }
+
+        return res.status(200).cookie("token", token, {
+            maxAge: 24 * 60 * 60 * 1000, // timeline
+            httpOnly: true,
+            sameSite: "Strict",
+        }).json({
+            message: `Welcome back ${user.fullname}`,
+            user,
+            success: true,
+        });
+
+    }catch(error){
+        console.error(error);
+        res.status(500).json({
+            message: "Server Error login failed",
+            success: false,
+        });
+    }
+};
+
+//for logout
+
+export const logout = async (req, res) => {
+  try {
+    return res.status(200).cookie("token", "", { maxAge: 0 }).json({ // after token, it is placed as blank
+      message: "Logged out successfully",
+      success: true,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      message: "Server Error logging out",
+      success: false,
+    });
+  }
+};
+
+// for update profile
+export const updateProfile = async (req, res) => {
+  try {
+        const { fullname, email, phoneNumber, bio, skills } = req.body;
+        const file = req.file;
+        if(!fullname || !email || !phoneNumber || !bi0 || !skills){
+            return res.status(404).json({
+                message: "Missing required fields",
+                success:true,
+            });
+        }
+
+        // cloudinary upload
+
+        
+
+        const skillsArray = skills.split(',');
+        const userId = req.id; // Assuming authentication middleware sets req.id
+        const user = await User.findById(userId);
+
+        if (!user) {
+            return res.status(404).json({
+                message: "User not found",
+                success: false,
+            });
+        }
+
+        if (fullname) user.fullname = fullname;
+        if (email) user.email = email;
+        if (phoneNumber) user.phoneNumber = phoneNumber;
+        if (bio) user.profile.bio = bio;
+        if (skills) user.profile.skills = skills.split(",");
+        // resume
+
+        await user.save();
+
+        const updatedUser = {
+        _id: user._id,
+        fullname: user.fullname,
+        email: user.email,
+        phoneNumber: user.phoneNumber,
+        role: user.role,
+        profile: user.profile,
+        };
+
+        return res.status(200).json({
+            message: "Profile updated successfully",
+            user: updatedUser,
+            success: true,
+        });
+  }catch(error){
+        console.error(error);
+        res.status(500).json({
+            message: "Server Error updating profile",
+            success: false,
+
+        });
+
+    }
+};
+
+
+
