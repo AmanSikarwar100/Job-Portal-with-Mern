@@ -1,7 +1,7 @@
 // making functions to control models
 // user control
 import User from "../models/user.model.js";
-import bcrypt from "bcrypt.js";
+import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 // for registering
 export const register = async (req,res) =>{
@@ -36,7 +36,7 @@ export const register = async (req,res) =>{
         await newUser.save();
         
         return res.status(201).json({
-            message: `Account created successfully for ${fullname}`,
+            message: `Account created successfully ${fullname}`,
             success:true,
         });
     }catch(error){
@@ -140,20 +140,22 @@ export const updateProfile = async (req, res) => {
   try {
         const { fullname, email, phoneNumber, bio, skills } = req.body;
         const file = req.file;
-        if(!fullname || !email || !phoneNumber || !bi0 || !skills){
-            return res.status(404).json({
-                message: "Missing required fields",
-                success:true,
-            });
-        }
+        // if(!fullname || !email || !phoneNumber || !bi0 || !skills){
+        //     return res.status(404).json({
+        //         message: "Missing required fields",
+        //         success:true,
+        //     });
+        // }
 
         // cloudinary upload
 
-        
+        let skillsArray;
+        if(skills){
+            const skillsArray = skills.split(',');
+        }
 
-        const skillsArray = skills.split(',');
         const userId = req.id; // Assuming authentication middleware sets req.id
-        const user = await User.findById(userId);
+        let user = await User.findById(userId);
 
         if (!user) {
             return res.status(404).json({
@@ -162,6 +164,7 @@ export const updateProfile = async (req, res) => {
             });
         }
 
+        //Update Database
         if (fullname) user.fullname = fullname;
         if (email) user.email = email;
         if (phoneNumber) user.phoneNumber = phoneNumber;

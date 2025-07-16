@@ -22,7 +22,7 @@ const userSchema = mongoose.Schema({
         },
         role: {
             type: String,
-            enum: ['Student', 'Recruiter'], // for options whether student or recruiter
+            enum: ['student', 'recruiter'], // for options whether student or recruiter
             default: 'Student',
             required: true
         },
@@ -52,4 +52,5 @@ const userSchema = mongoose.Schema({
     { timeStamps: true }
 );
 
-export const User = mongoose.model("User", userSchema);
+const User = mongoose.model("User", userSchema);
+export default User;
