@@ -26,11 +26,25 @@ export const applyJob = async (req, res) => {
     if (!job) {
       return res.status(404).json({ message: "Job not found", success: false });
     }
+    // Normalize requirements
+    // let requirementsArray = [];
+    // const { requirements } = req.body;
+    // let requirementsArray = [];
+    // let requirements = req.query.requirements || [];
+
+    // if (typeof requirements === 'string') {
+    //   requirementsArray = [requirements.trim()];
+    // } else if (Array.isArray(requirements)) {
+    //   requirementsArray = requirements.map(r => r.trim());
+    // }
+
     // create a new application
+
 
     const newApplication = await Application.create({
       job: jobId,
       applicant: userId,
+      //requirements: requirementsArray,
     });
     job.applications.push(newApplication._id);
     await job.save();

@@ -1,6 +1,6 @@
 import mongoose, { trusted } from "mongoose";
 const applicationSchema = new mongoose.Schema({
-    jon:{
+    job:{
         type: mongoose.Schema.Types.ObjectId,
         ref: "Job",
         required:true
@@ -16,7 +16,7 @@ const applicationSchema = new mongoose.Schema({
         default:'pending'
     },
 
-}, {timeStamps:true}
+}, {timestamps:true}
 );
 
 export const Application = mongoose.model("Application", applicationSchema);
