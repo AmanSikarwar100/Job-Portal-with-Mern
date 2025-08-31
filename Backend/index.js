@@ -23,12 +23,13 @@ const app = express();
 
 //Middleware
 app.use(express.json());
-app.use(express.urlencoded({ entended: true }));
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 const corsOptions = {
-    origin: ["https://localhost:5121"],
-    credintials: true,
+    origin: ["http://localhost:5173"],
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
 
 };
 
@@ -39,20 +40,10 @@ const PORT = process.env.PORT || 5001;
 
 //api's
 
-app.use("/api/users", userRoute);
+app.use("/api/user", userRoute);
 app.use("/api/company", companyRoute);
 app.use("/api/job", jobRoute);
 app.use("/api/application", applicationRoute);
-
-
-
-
-
-
-
-
-
-
 
 
 
