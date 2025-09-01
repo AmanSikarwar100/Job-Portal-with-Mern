@@ -11,6 +11,8 @@ const useGetAllJobs = () => {
   const { searchedQuery } = useSelector((store) => store.job);
 
   useEffect(() => {
+    let intervalId;
+
     const fetchAllJobs = async () => {
       setLoading(true);
       setError(null);
@@ -37,7 +39,12 @@ const useGetAllJobs = () => {
     };
 
     fetchAllJobs();
-  }, [dispatch]);
+
+    // Poll every 30 seconds
+    intervalId = setInterval(fetchAllJobs, 30000);
+
+    return () => clearInterval(intervalId);
+  }, [dispatch, searchedQuery]);
 
   return { loading, error };
 };

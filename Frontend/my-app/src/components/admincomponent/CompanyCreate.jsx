@@ -12,13 +12,14 @@ import axios from "axios";
 
 const CompanyCreate = () => {
   const navigate = useNavigate();
-  const [companyName, setCompanyName] = useState();
+  const [companyName, setCompanyName] = useState("");
+  const [description, setDescription] = useState("");
   const dispatch = useDispatch();
   const registerNewCompany = async () => {
     try {
       const res = await axios.post(
         `${COMPANY_API_ENDPOINT}/register`,
-        { companyName },
+        { companyName, description },
         {
           headers: {
             "Content-Type": "application/json",
@@ -33,7 +34,9 @@ const CompanyCreate = () => {
         navigate(`/admin/companies/${companyId}`);
       }
     } catch (error) {
-      console.log(error);
+      toast.error(error.response?.data?.message || "Failed to register company");
++     console.log("Register Company Error:", error);
+
     }
   };
   return (
@@ -50,6 +53,13 @@ const CompanyCreate = () => {
           placeholder="Company Name"
           className="my-2"
           onChange={(e) => setCompanyName(e.target.value)}
+        />
+        <Label>Company Description</Label>
+        <Input
+        type="text"
+        placeholder="Company Description"
+        className="my-2"
+        onChange={(e) => setDescription(e.target.value)}
         />
 
         <div className="flex items-center gap-2 my-10">

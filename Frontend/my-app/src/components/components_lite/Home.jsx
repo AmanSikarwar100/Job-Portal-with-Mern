@@ -9,10 +9,10 @@ import useGetAllJobs from "@/hooks/useGetAllJobs";
 import { useNavigate } from "react-router-dom";
 
 const Home = () => {
-  const { loading, error } = useGetAllJobs(); // Trigger data fetch
-  const jobs = useSelector((state) => state.jobs.allJobs); // Access Redux state
-
+  const { loading, error } = useGetAllJobs(); // Internal jobs
+  const jobs = useSelector((state) => state.jobs.allJobs); // Internal jobs from Redux
   console.log("Jobs in Component:", { loading, error, jobs }); // Log to check state
+
   const { user } = useSelector((store) => store.auth);
   const navigate = useNavigate();
 
@@ -23,14 +23,25 @@ const Home = () => {
   }, []);
 
   return (
-    <div>
+    <div className="relative overflow-hidden">
       <Navbar />
-      <Header />
-      <Categories />
-      {loading && <p>Loading jobs...</p>}
-      {error && <p>Error: {error}</p>}
-      {!loading && !error && <LatestJobs jobs={jobs} />}
-      <Footer />
+      <div className="absolute inset-0 animate-gradient opacity-10" style={{ top: '64px' }}></div>
+      <div className="animate-fade-in relative z-10">
+        <Header />
+      </div>
+      <div className="animate-fade-in relative z-10" style={{ animationDelay: '0.2s' }}>
+        <Categories />
+      </div>
+      {loading && <p className="animate-fade-in relative z-10" style={{ animationDelay: '0.4s' }}>Loading jobs...</p>}
+      {error && <p className="animate-fade-in relative z-10" style={{ animationDelay: '0.4s' }}>Error: {error}</p>}
+      {!loading && !error && (
+        <div className="animate-fade-in relative z-10" style={{ animationDelay: '0.4s' }}>
+          <LatestJobs jobs={jobs} />
+        </div>
+      )}
+      <div className="animate-fade-in relative z-10" style={{ animationDelay: '0.6s' }}>
+        <Footer />
+      </div>
     </div>
   );
 };

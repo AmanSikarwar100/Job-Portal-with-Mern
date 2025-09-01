@@ -9,7 +9,7 @@ export const postJob = async (req, res) => {
       salary,
       location,
       jobType,
-      experience,
+      experienceLevel,
       position,
       companyId,
     } = req.body;
@@ -18,12 +18,10 @@ export const postJob = async (req, res) => {
     if (
       !title ||
       !description ||
-      !requirements ||
-      !salary ||
+      salary == null || salary === '' ||
       !location ||
       !jobType ||
-      !experience ||
-      !position ||
+      position == null || position === '' ||
       !companyId
     ) {
       return res.status(400).json({
@@ -45,12 +43,12 @@ export const postJob = async (req, res) => {
     const job = await Job.create({
       title,
       description,
-      
+
       requirements: requirementsArray,
       salary: Number(salary),
       location,
       jobType,
-      experience: experience,
+      experienceLevel: experienceLevel,
       position,
       company: companyId,
       created_by: userId,
@@ -123,5 +121,23 @@ export const getAdminJobs = async (req, res) => {
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Server Error", status: false });
+  }
+};
+
+// Controller to get jobs from JSearch API
+export const getJSearchJobs = async (req, res) => {
+  try {
+    const { query, location } = req.query;
+    const jobs = await fetchJSearchJobs({ query, location });
+    return res.status(200).json({
+      jobs,
+      success: true,
+    });
+  } catch (error) {
+    console.error("Error in getJSearchJobs controller:", error);
+    return res.status(500).json({
+      message: "Internal Server Error",
+      success: false,
+    });
   }
 };

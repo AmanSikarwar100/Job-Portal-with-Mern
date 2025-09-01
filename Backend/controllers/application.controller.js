@@ -44,6 +44,7 @@ export const applyJob = async (req, res) => {
     const newApplication = await Application.create({
       job: jobId,
       applicant: userId,
+      experienceLevel: job.experienceLevel || 0,
       //requirements: requirementsArray,
     });
     job.applications.push(newApplication._id);

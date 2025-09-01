@@ -30,6 +30,11 @@ const Login = () => {
   const submitHandler = async (e) => {
     e.preventDefault();
 
+    if (!input.role) {
+      toast.error("Please select a role");
+      return;
+    }
+
     try {
       dispatch(setLoading(true)); // Start loading
       const res = await axios.post(`${USER_API_ENDPOINT}/login`, input, {
@@ -60,12 +65,12 @@ const Login = () => {
       <div className="flex items-center justify-center max-w-7xl mx-auto">
         <form
           onSubmit={submitHandler}
-          className="w-1/2 border border-gray-500 rounded-md p-4 my-10"
+          className="w-1/2 border border-gray-500 rounded-md p-4 my-10 animate-bounce-in shadow-lg"
         >
-          <h1 className="font-bold text-xl mb-5 text-center text-blue-600">
+          <h1 className="font-bold text-xl mb-5 text-center text-blue-600 animate-rotate-in">
             Login
           </h1>
-          <div className="my-2">
+          <div className="my-2 animate-slide-in-left" style={{ animationDelay: '0.2s' }}>
             <Label>Email</Label>
             <Input
               type="email"
@@ -75,7 +80,7 @@ const Login = () => {
               placeholder="johndoe@gmail.com"
             ></Input>
           </div>
-          <div className="my-2">
+          <div className="my-2 animate-slide-in-right" style={{ animationDelay: '0.4s' }}>
             <Label>Password</Label>
             <Input
               type="password"
@@ -90,26 +95,28 @@ const Login = () => {
           <div className="flex items-center justify-between">
             <RadioGroup className="flex items-center gap-4 my-5 ">
               <div className="flex items-center space-x-2">
-                <Input
-                  type="radio"
-                  name="role"
-                  value="Student"
-                  checked={input.role === "Student"}
-                  onChange={changeEventHandler}
-                  className="cursor-pointer"
-                />
-                <Label htmlFor="r1">Student</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Input
-                  type="radio"
-                  name="role"
-                  value="Recruiter"
-                  checked={input.role === "Recruiter"}
-                  onChange={changeEventHandler}
-                  className="cursor-pointer"
-                />
-                <Label htmlFor="r2">Recruiter</Label>
+              <Input
+                type="radio"
+                id="r1"
+                name="role"
+                value="Student"
+                checked={input.role === "Student"}
+                onChange={changeEventHandler}
+                className="cursor-pointer"
+              />
+              <Label htmlFor="r1">Student</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Input
+                type="radio"
+                id="r2"
+                name="role"
+                value="Recruiter"
+                checked={input.role === "Recruiter"}
+                onChange={changeEventHandler}
+                className="cursor-pointer"
+              />
+              <Label htmlFor="r2">Recruiter</Label>
               </div>
             </RadioGroup>
           </div>
@@ -123,16 +130,18 @@ const Login = () => {
           ) : ( */}
             <button
               type="submit"
-              className="w-3/4 py-3 my-3 text-white flex items-center justify-center max-w-7xl mx-auto bg-blue-600 hover:bg-blue-800/90 rounded-md">
+              className="w-3/4 py-3 my-3 text-white flex items-center justify-center max-w-7xl mx-auto bg-blue-600 hover:bg-blue-800/90 rounded-md transition-transform duration-300 hover:scale-105 animate-bounce-in"
+              style={{ animationDelay: '0.6s' }}
+            >
               Login
             </button>
-          
 
-          <div className=" ">
+
+          <div className=" animate-fade-in" style={{ animationDelay: '0.8s' }}>
             <p className="text-gray-700  text-center my-2">
               Create new Account{" "}
               <Link to="/register" className="text-blue-700">
-                <button className=" w-1/2 py-3 my-3 text-white flex items-center justify-center max-w-7xl mx-auto bg-green-600 hover:bg-green-800/90 rounded-md">
+                <button className=" w-1/2 py-3 my-3 text-white flex items-center justify-center max-w-7xl mx-auto bg-green-600 hover:bg-green-800/90 rounded-md transition-transform duration-300 hover:scale-105">
                   Register
                 </button>
               </Link>

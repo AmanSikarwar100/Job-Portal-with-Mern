@@ -1,6 +1,7 @@
-// For creating jobs, we are creating register company 
+// For creating jobs, we are creating register company
 
 import { Company } from "../models/company.model.js";
+import { Job } from "../models/job.model.js";
 import getDataUri from "../utils/datauri.js";
 import cloudinary from '../utils/cloud.js';
 
@@ -103,6 +104,28 @@ export const updateCompany = async (req, res) => {
         return res.status(200).json({ message: "Company updated" });
     } catch (error) {
         console.log("Update Company Error:",error);
+        return res.status(500).json({
+            message: "Internal Server Error",
+            error: error.message
+        });
+    }
+};
+
+export const getCompaniesWithJobs = async (req, res) => {
+    try {
+        // Get distinct company IDs from jobs
+        const companyIds = await Job.distinct('company');
+        if (!companyIds || companyIds.length === 0) {
+            return res.status(404).json({ message: "No companies with jobs found" });
+        }
+        // Fetch companies with these IDs
+        const companies = await Company.find({ _id: { $in: companyIds } });
+        return res.status(200).json({
+            companies,
+            success: true,
+        });
+    } catch (error) {
+        console.log("Get Companies With Jobs Error:", error);
         return res.status(500).json({
             message: "Internal Server Error",
             error: error.message

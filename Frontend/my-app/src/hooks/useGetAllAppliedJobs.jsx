@@ -4,7 +4,7 @@ import axios from "axios";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 
-const useGetAppliedJobs = () => {
+const useGetAppliedJobs = (refresh) => {
   const dispatch = useDispatch();
   useEffect(() => {
     const fetchAppliedJobs = async () => {
@@ -14,14 +14,14 @@ const useGetAppliedJobs = () => {
         });
         console.log("API Response:", res.data);
         if (res.data.success) {
-          dispatch(setAllAppliedJobs(res.data.application));
+          dispatch(setAllAppliedJobs(res.data.applications));
         }
       } catch (error) {
         console.error(error);
       }
     };
     fetchAppliedJobs();
-  }, [dispatch]);
+  }, [dispatch, refresh]);
   return null;
 };
 

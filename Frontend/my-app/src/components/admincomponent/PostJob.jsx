@@ -30,7 +30,7 @@ const PostJob = () => {
     salary: "",
     location: "",
     jobType: "",
-    experience: "",
+    experienceLevel: "",
     position: 0,
     companyId: "",
   });
@@ -42,17 +42,20 @@ const PostJob = () => {
   const [loading, setLoading] = useState(false);
 
   const selectChangeHandler = (value) => {
-    const selectedCompany = companies.find(
-      (company) => company.name.toLowerCase() === value
-    );
-    setInput({ ...input, companyId: selectedCompany._id });
+    setInput({ ...input, companyId: value});
   };
 
   const submitHandler = async (e) => {
     e.preventDefault();
     try {
       setLoading(true);
-      const res = await axios.post(`${JOB_API_ENDPOINT}/post`, input, {
+      const payload = {
+      ...input,
+      salary: Number(input.salary),
+      position: Number(input.position),
+      requirements: input.requirements.split(",").map((r) => r.trim()),
+      };
+      const res = await axios.post(`${JOB_API_ENDPOINT}/post`, payload, {
         headers: {
           "Content-Type": "application/json",
         },
@@ -156,8 +159,8 @@ const PostJob = () => {
               <Label>Experience</Label>
               <Input
                 type="number"
-                name="experience"
-                value={input.experience}
+                name="experienceLevel"
+                value={input.experienceLevel}
                 placeholder="Enter job experience"
                 className="focus-visible:ring-offset-0 focus-visible:ring-0 my-1 hover:shadow-blue-400"
                 onChange={changeEventHandler}
@@ -186,7 +189,7 @@ const PostJob = () => {
                       {companies.map((company) => (
                         <SelectItem
                           key={company._id}
-                          value={company.name.toLowerCase()}
+                          value={company._id}
                         >
                           {company.name}
                         </SelectItem>

@@ -8,6 +8,7 @@ const authenticateToken = async (req, res, next) => {
         // const authHeader = req.headers['authorization'];
         // const token = authHeader && authHeader.split(' ')[1];
         if(!token){
+            console.log("No token provided");
             return res.status(401).json({
                 message:"No token provided",
                 success:false
@@ -15,6 +16,7 @@ const authenticateToken = async (req, res, next) => {
         }
         const decoded = await jwt.verify(token, process.env.JWT_SECRET);
         if(!decoded){
+            console.log("Invalid token");
             return(
              res.status(401).json({
                 message: "Invalid token"
@@ -25,6 +27,7 @@ const authenticateToken = async (req, res, next) => {
         next();
 
     }catch(error){
+        console.log("Error verifying token:", error);
         return res.status(401).json({
             message: "Invalid token"
         });

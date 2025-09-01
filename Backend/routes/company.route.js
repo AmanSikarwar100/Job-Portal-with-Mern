@@ -6,6 +6,7 @@ import {
   getCompanyById,
   registerCompany,
   updateCompany,
+  getCompaniesWithJobs,
 } from "../controllers/company.controller.js";
 import { singleUpload } from "../middleware/multer.js";
 
@@ -15,5 +16,6 @@ router.route("/register").post(authenticateToken, registerCompany);
 router.route("/get").get(authenticateToken, getAllCompanies);
 router.route("/get/:id").get(authenticateToken, getCompanyById); // get by id
 router.route("/update/:id").put(authenticateToken, singleUpload, updateCompany); // update by id, // "put" because we are updating
+router.route("/getcompanieswithjobs").get(getCompaniesWithJobs); // get companies that have posted jobs
 
 export default router;

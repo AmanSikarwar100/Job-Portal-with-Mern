@@ -26,14 +26,18 @@ const AppliedJob = () => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {allAppliedJobs.length <= 0 ? (
-            <span>You have not applied any job yet. </span>
+          {(!allAppliedJobs|| allAppliedJobs.length === 0) ? (
+            <TableRow>
+              <TableCell colSPan={4} className="text-center">
+                You have not applied to nay job yet.
+              </TableCell>
+            </TableRow>
           ) : (
             allAppliedJobs.map((appliedJob) => (
               <TableRow key={appliedJob._id}>
                 <TableCell>{appliedJob?.createdAt?.split("T")[0] || "N/A"}</TableCell>
-                <TableCell>{appliedJob.job?.title}</TableCell>
-                <TableCell>{appliedJob.job?.company.name}</TableCell>
+                <TableCell>{appliedJob?.job?.title || "N/A"}</TableCell>
+                <TableCell>{appliedJob?.job?.company?.name || "N/A"}</TableCell>
                 <TableCell className="text-right">
                   <Badge
                     className={`${
@@ -45,7 +49,7 @@ const AppliedJob = () => {
                     }`}
                   >
                     {" "}
-                    {appliedJob?.status}
+                    {appliedJob?.status || "pending"}
                   </Badge>{" "}
                 </TableCell>
               </TableRow>
@@ -58,3 +62,6 @@ const AppliedJob = () => {
 };
 
 export default AppliedJob;
+
+
+
